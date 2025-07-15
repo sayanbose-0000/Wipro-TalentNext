@@ -1157,3 +1157,582 @@ Exception in thread "main" InvalidUserException: Invalid User
         at java.base/java.util.Optional.orElseThrow(Optional.java:403)
         at InvalidUser.main(InvalidUser.java:15)
 ```
+
+# Abstraction/Package/Exception Handling
+
+## Abstract Classes
+
+### 1. 
+Code
+```java
+import java.util.Random;
+
+public class TestCompartment {
+  public static void main(String[] args) {
+    Compartment[] comp = new Compartment[10];
+    Random rand = new Random();
+
+    for (int i = 0; i < comp.length; i++) {
+      int compRand = rand.nextInt(4) + 1;
+
+      switch (compRand) {
+        case 1:
+          comp[i] = new FirstClass();
+          break;
+
+        case 2:
+          comp[i] = new Ladies();
+          break;
+
+        case 3:
+          comp[i] = new General();
+          break;
+
+        case 4:
+          comp[i] = new Luggage();
+          break;
+      
+        default:
+          break;
+      }
+    }
+
+    for (Compartment c : comp) {
+      System.out.println(c.notice());
+    }
+  }
+}
+
+abstract class Compartment {
+  public abstract String notice();
+}
+
+class FirstClass extends Compartment {
+  @Override
+  public String notice() {
+    return "This is a First Class Compartment";
+  }
+}
+
+class Ladies extends Compartment {
+  @Override
+  public String notice() {
+    return "This is a Ladies Compartment";
+  }
+}
+
+class General extends Compartment {
+  @Override
+  public String notice() {
+    return "This is a General Compartment";
+  }
+}
+
+class Luggage extends Compartment {
+  @Override
+  public String notice() {
+    return "This is a Luggage Compartment";
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java TestCompartment
+This is a Luggage Compartment
+This is a First Class Compartment
+This is a Ladies Compartment
+This is a First Class Compartment
+This is a Ladies Compartment
+This is a Ladies Compartment
+This is a Ladies Compartment
+This is a Luggage Compartment
+This is a Luggage Compartment
+This is a General Compartment
+```
+
+## Packages
+
+### 3.
+FileStructure
+```sh
+.
+└── com
+    ├── TestMain.java
+    └── automobile
+        ├── Vehicle.java
+        └── twowheeler
+            ├── Hero.java
+            └── Honda.java
+```
+
+Code
+```java
+// TestMain.java
+package com;
+
+import com.automobile.twowheeler.Hero;
+import com.automobile.twowheeler.Honda;
+
+public class TestMain {
+  public static void main(String[] args) {
+    Hero hero = new Hero();
+    System.out.println(hero.getModelName());
+    System.out.println(hero.getRegistrationNumber());
+    System.out.println(hero.getOwnerName());
+    System.out.println(hero.getSpeed());  
+    hero.radio();
+
+    Honda honda = new Honda();
+    System.out.println(honda.getModelName());
+    System.out.println(honda.getRegistrationNumber());
+    System.out.println(honda.getOwnerName());
+    System.out.println(honda.getSpeed());
+    honda.cdplayer();
+  }
+}
+
+// Vehicle.java
+package com.automobile;
+
+public abstract class Vehicle {
+  public abstract String getModelName();
+  public abstract String getRegistrationNumber();
+  public abstract String getOwnerName();
+}
+
+// Hero.java
+package com.automobile.twowheeler;
+
+import com.automobile.Vehicle;
+
+public class Hero extends Vehicle {
+  public int getSpeed() {
+    return 56;
+  }
+
+  public void radio() {
+    System.out.println("Radio running");
+  }
+
+  @Override
+  public String getModelName() {
+    return "MA789B";
+  }
+
+  @Override
+  public String getOwnerName() {
+    return "Aman Singh";
+  }
+
+  @Override
+  public String getRegistrationNumber() {
+    return "584681814846";
+  }
+}
+
+// Honda.java
+package com.automobile.twowheeler;
+
+import com.automobile.Vehicle;
+
+public class Honda extends Vehicle {
+  public int getSpeed() {
+    return 65;
+  }
+
+  public void cdplayer() {
+    System.out.println("CD player running");
+  }
+
+  @Override
+  public String getModelName() {
+    return "M1423A";
+  }
+
+  @Override
+  public String getOwnerName() {
+    return "Ankit Burman";
+  }
+
+  @Override
+  public String getRegistrationNumber() {
+    return "89784864894";
+  }
+}
+```
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException/Automobile
+$ javac com/TestMain.java com/automobile/Vehicle.java com/automobile/twowheeler/Hero.java com/automobile/twowheeler/Honda.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException/Automobile
+$ java com/TestMain
+MA789B
+584681814846
+Aman Singh
+56
+Radio running
+M1423A
+89784864894
+Ankit Burman
+65
+CD player running
+```
+
+## Interfaces
+
+### 1.
+File Structure
+```sh
+.
+├── live
+│   └── Test.java
+└── music
+    ├── Playable.java
+    ├── string
+    │   └── Veena.java
+    └── wind
+        └── Saxophone.java
+```
+
+Code
+```java
+// Test.java
+package live;
+
+import music.Playable;
+import music.string.Veena;
+import music.wind.Saxophone;
+
+public class Test {
+  public static void main(String[] args) {
+    Playable veena = new Veena();
+    veena.play();
+
+    Playable saxophone = new Saxophone();
+    saxophone.play();
+  }
+}
+
+// Playable.java
+package music;
+
+public interface Playable {
+  void play();
+}
+
+// Veena.java
+package music.string;
+
+import music.Playable;
+
+public class Veena implements Playable {
+  @Override
+  public void play() {
+    System.out.println("Playing Veena");
+  }
+}
+
+// Saxophone.java
+package music.wind;
+
+import music.Playable;
+
+public class Saxophone implements Playable {
+  @Override
+  public void play() {
+    System.out.println("Playing Saxophone");
+  }
+}
+```
+
+Output
+```js
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException/Instruments
+$ javac live/Test.java music/Playable.java music/string/Veena.java music/wind/Saxophone.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException/Instruments
+$ java live/Test
+Playing Veena
+Playing Saxophone
+```
+
+
+## Interface-new features
+
+### 2.
+
+Code
+```java
+public class Lambda {
+  public static void main(String[] args) {
+    Test t1 = (a, b, c) -> a + b + c;
+    Test t2 = (a, b, c) -> a * b * c;
+
+    System.out.println(t1.myFunction(2, -1, 4));
+    System.out.println(t2.myFunction(7, -3, 2));
+  }
+}
+
+interface Test {
+  abstract int myFunction(int a, int b, int c);
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ javac Lambda.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java Lambda
+5
+-42
+```
+
+## Exception Handling
+
+### 1. 
+
+Code
+```java
+import java.util.Scanner;
+
+public class ArrayException {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    try {
+      System.out.println("Enter the number of elements in the array");
+      int size = Integer.parseInt(sc.nextLine()); // sc.nextInt() gives InputMismatchException, to get NumberFormatException, parse manually
+
+      int[] arr = new int[size];
+
+      System.out.println("Enter the elements in the array");
+      for (int i = 0; i < size; i++) {
+        arr[i] = Integer.parseInt(sc.nextLine());
+      }
+
+      System.out.println("Enter the index of the array element you want to access");
+      int idx = Integer.parseInt(sc.nextLine());
+
+      System.out.println("The array element at index " + idx + " = " + arr[idx]);
+      System.out.println("The array element successfully accessed");
+
+    }
+    
+    catch (ArrayIndexOutOfBoundsException aioobe) {
+      System.out.println(aioobe);
+    }
+    
+    catch (NumberFormatException nfe) {
+      System.out.println(nfe);
+    }
+
+    finally {
+      sc.close();
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ javac ArrayException.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java ArrayException
+Enter the number of elements in the array
+2
+Enter the elements in the array
+50
+80
+Enter the index of the array element you want to access
+1
+The array element at index 1 = 80
+The array element successfully accessed
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java ArrayException
+Enter the number of elements in the array
+2
+Enter the elements in the array
+50
+80
+Enter the index of the array element you want to access
+9
+java.lang.ArrayIndexOutOfBoundsException: Index 9 out of bounds for length 2
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java ArrayException
+Enter the number of elements in the array
+2
+Enter the elements in the array
+30
+j
+java.lang.NumberFormatException: For input string: "j"
+```
+
+### 3.
+Code
+```java
+import java.util.Scanner;
+
+class NegativeValueException extends Exception {}
+class ValueOutOfRangeException extends Exception {}
+
+public class AvgMarks {
+  public static void main(String[] args) throws NumberFormatException, NegativeValueException, ValueOutOfRangeException {
+    Scanner sc = new Scanner(System.in);
+
+      System.out.println("Enter name: ");
+      String name = sc.nextLine();
+
+      System.out.println("Ebter marks in maths: ");
+      int mathMarks = Integer.parseInt(sc.next());
+
+      System.out.println("Ebter marks in science: ");
+      int scienceMarks = Integer.parseInt(sc.next());
+
+      System.out.println("Ebter marks in english: ");
+      int englishMarks = Integer.parseInt(sc.next());
+
+      if (mathMarks < 0 || scienceMarks < 0 || englishMarks < 0) throw new NegativeValueException();
+      if (mathMarks > 100 || scienceMarks > 100 || englishMarks > 100) throw new ValueOutOfRangeException();
+
+      System.out.println("The average is: " + ((mathMarks + scienceMarks + englishMarks) / 3));
+  }
+}
+```
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ javac AvgMarks.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java AvgMarks
+Enter name: 
+Aman Chaubey
+Ebter marks in maths: 
+j
+Exception in thread "main" java.lang.NumberFormatException: For input string: "j"
+        at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+        at java.base/java.lang.Integer.parseInt(Integer.java:588)
+        at java.base/java.lang.Integer.parseInt(Integer.java:685)
+        at AvgMarks.main(AvgMarks.java:14)
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java AvgMarks
+Enter name: 
+Ankit Tiwari
+Ebter marks in maths:
+255
+Ebter marks in science:
+33
+Ebter marks in english:
+44
+Exception in thread "main" ValueOutOfRangeException
+        at AvgMarks.main(AvgMarks.java:23)
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java AvgMarks
+Enter name: 
+Ankit Adhikari 
+Ebter marks in maths:
+55
+Ebter marks in science:
+68
+Ebter marks in english:
+36
+The average is: 53
+```
+
+### 4.
+Code
+```java
+import java.util.Scanner;
+
+class InvalidCountryException extends Exception {
+  InvalidCountryException() {
+    super();
+  }
+
+  InvalidCountryException(String mssg) {
+    super(mssg);
+  }
+}
+
+public class UserRegistration {
+  static void registerUser(String username, String userCountry) throws InvalidCountryException {
+    if (!userCountry.toLowerCase().equals("india")) {
+      throw new InvalidCountryException("User Outside India cannot be registered");
+    } else {
+      System.out.println("User registration done successfully");
+    }
+  }
+
+  public static void main(String[] args) throws InvalidCountryException {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Enter name: ");
+    String username = sc.next();
+
+    System.out.println("Enter country");
+    String userCountry = sc.next();
+
+    registerUser(username, userCountry);
+
+    sc.close();
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ javac UserRegistration.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java UserRegistration
+Enter name: 
+Mickey
+Enter country
+US
+Exception in thread "main" InvalidCountryException: User Outside India cannot be registered
+        at UserRegistration.registerUser(UserRegistration.java:16)
+        at UserRegistration.main(UserRegistration.java:31)
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java UserRegistration
+Enter name: 
+Mini
+Enter country
+India
+User registration done successfully
+```
+
+### 5.
+Code
+```java
+class AgeLessThanEighteenOrGreaterThanSixtyException extends Exception {
+  public AgeLessThanEighteenOrGreaterThanSixtyException(String mssg) {
+    super(mssg);
+  }
+}
+
+public class Age {
+  public static void main(String[] args) throws AgeLessThanEighteenOrGreaterThanSixtyException {
+    int age = Integer.parseInt(args[0]);
+    if (age < 18 || age > 60) {
+      throw new AgeLessThanEighteenOrGreaterThanSixtyException("Age less than 18 or greater than 60");
+    }
+
+    System.out.println("You are of age");
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ javac Age.java 
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java Age 10
+Exception in thread "main" AgeLessThanEighteenOrGreaterThanSixtyException: Age less than 18 or greater than 60
+        at Age.main(Age.java:11)
+User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
+$ java Age 19
+You are of age
+``` 
