@@ -1744,9 +1744,115 @@ You are of age
 ### 2.
 Code
 ```java
+public class BinOctHex {
+  public static void main(String[] args) {
+    int num = Integer.parseInt(args[0]);
 
+    System.out.println("Given Number: " + num);
+    System.out.println("Binary Equivalent: " + Integer.toBinaryString(num));
+    System.out.println("Octal Equivalent: " + Integer.toOctalString(num));
+    System.out.println("Hexadecimal Equivalent: " + Integer.toHexString(num));
+  }
+}
 ```
 
 Output
 ```sh
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ javac BinOctHex.java 
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ java BinOctHex 20
+Given Number: 20
+Binary Equivalent: 10100
+Octal Equivalent: 24
+Hexadecimal Equivalent: 14
+```
+
+### 3.
+Code
+```java
+import java.util.Scanner;
+
+public class DecBin {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Enter a num (1-255): ");
+    int num = Integer.parseInt(sc.next());
+    sc.close();
+
+    if (num < 1 || num > 255) {
+      System.out.println("Number must be between 1 and 255");
+      return;
+    }
+
+    String rawBinary = Integer.toBinaryString(num);
+    String bin = String.format("%8s", rawBinary).replace(' ', '0');
+    System.out.println("Binary is: " + bin);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ javac DecBin.java 
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ java DecBin
+Enter a num (1-255): 
+16
+Binary is: 00010000
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ java DecBin
+Enter a num (1-255): 
+100
+Binary is: 01100100
+```
+
+### 4.
+
+Code
+```java
+class Employee implements Cloneable {
+    String name;
+    int id;
+    
+    Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+    
+    void display() {
+        System.out.println("Name: " + name + ", Id: " + id);
+    }
+    
+    public Employee clone() throws CloneNotSupportedException {
+        return (Employee) super.clone();
+    }
+}
+
+public class EmployeeMain {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Employee emp1 = new Employee("Tony Stark", 484683464);
+        Employee emp2 = emp1.clone();
+        
+        emp2.name = "Steve Rogers";
+        emp2.id = 6548844;
+        
+        System.out.println("Original Employee: ");
+        emp1.display();
+        
+        System.out.println("Clone Employee: ");
+        emp2.display();
+    }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/WrapperClass
+$ java EmployeeMain
+Original Employee:
+Name: Tony Stark, Id: 484683464
+Clone Employee:
+Name: Steve Rogers, Id: 6548844
 ```
