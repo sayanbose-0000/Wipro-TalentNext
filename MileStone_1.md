@@ -1736,3 +1736,17 @@ User@bose /c/sayan/Wipro-TalentNext/AbstractionPackageException
 $ java Age 19
 You are of age
 ``` 
+
+# Wrapper Classes
+
+## Wrapper Classes
+
+### 2.
+Code
+```java
+
+```
+
+Output
+```sh
+```
