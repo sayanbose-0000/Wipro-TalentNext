@@ -1856,3 +1856,1497 @@ Name: Tony Stark, Id: 484683464
 Clone Employee:
 Name: Steve Rogers, Id: 6548844
 ```
+
+# I/O Streams
+
+## I/O Operations
+
+### 1.
+Input File
+```sh
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+```
+
+Code
+```java
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class FileCharacterCount {
+  public static void main(String[] args) throws FileNotFoundException, IOException {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Enter the file name");
+    String fileName = sc.nextLine();
+
+    System.out.println("Enter the character to be counted");
+    char charToFind = sc.nextLine().toLowerCase().charAt(0);
+
+    FileReader fr = new FileReader(fileName);
+    int count = 0;
+    int c = fr.read();
+
+    while (c != -1) {
+      if (Character.toLowerCase((char) c) == charToFind) {
+        count++;
+      }
+      c = fr.read();
+    }
+
+    System.out.println("File '" + fileName + "' has " + count + " instances of letter '" + charToFind + "'.");
+
+    sc.close();
+    fr.close();
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/IoStream/FileOne
+$ javac FileCharacterCount.java 
+User@bose /c/sayan/Wipro-TalentNext/IoStream/FileOne
+$ java FileCharacterCount
+Enter the file name
+Input.txt
+Enter the character to be counted
+r
+File 'Input.txt' has 50 instances of letter 'r'.
+```
+
+### 3.
+inputFile.txt
+```sh
+Manoj works at Wipro
+Katari works at Wipro
+Sureka works at Wipro
+Harish works at Wipro
+Anitha works at Wipro
+Janani works at Wipro
+```
+
+outFile.txt
+```sh
+Anitha : 1
+Harish : 1
+Janani : 1
+Katari : 1
+Manoj : 1
+Sureka : 1
+Wipro : 6
+at : 6
+works : 6
+```
+
+Code
+```java
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
+
+public class FileWordCount {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Enter the input file name");
+    String inputFile = sc.nextLine();
+
+    System.out.println("Enter the output file name");
+    String outputFile = sc.nextLine();
+
+    Map<String, Integer> wordCountMap = new TreeMap<String, Integer>();
+
+    try (FileReader fr = new FileReader(inputFile); FileWriter fw = new FileWriter(outputFile)) {
+      Scanner fileScanner = new Scanner(fr);
+      while (fileScanner.hasNextLine()) {
+        String[] words = fileScanner.nextLine().split("\\s+");
+        for (String word : words) {
+          wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+        }
+      }
+      
+      fileScanner.close();
+
+      for (Map.Entry<String, Integer> entry : wordCountMap.entrySet()) {
+        fw.write(entry.getKey() + " : " + entry.getValue() + "\n");
+      }
+
+      System.out.println("Word count has been written to " + outputFile);
+
+    } catch (IOException e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+
+    sc.close();
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/IoStream/FIleTwo
+$ javac FileWordCount.java 
+User@bose /c/sayan/Wipro-TalentNext/IoStream/FIleTwo
+$ java FileWordCount
+Enter the input file name
+inputFile.txt
+Enter the output file name
+outputFile.txt
+Word count has been written to outputFile.txt
+```
+
+## Object Seriralization
+
+### 1.
+Code
+```java
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
+
+class Employee implements Serializable {
+  String name;
+  Date dateOfBirth;
+  String department;
+  String designation;
+  double salary;
+
+  public Employee(String name, Date dateOfBirth, String department, String designation, double salary) {
+    this.name = name;
+    this.dateOfBirth = dateOfBirth;
+    this.department = department;
+    this.designation = designation;
+    this.salary = salary;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Date getDateOfBirth() {
+    return dateOfBirth;
+  }
+
+  public String getDepartment() {
+    return department;
+  }
+
+  public String getDesignation() {
+    return designation;
+  }
+
+  public double getSalary() {
+    return salary;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setDateOfBirth(Date dateOfBirth) {
+    this.dateOfBirth = dateOfBirth;
+  }
+
+  public void setDepartment(String department) {
+    this.department = department;
+  }
+
+  public void setDesignation(String designation) {
+    this.designation = designation;
+  }
+
+  public void setSalary(double salary) {
+    this.salary = salary;
+  }
+
+  @Override
+  public String toString() {
+    return "Employee: name='" + name + '\'' + ", dateOfBirth=" + dateOfBirth + ", department='" + department + '\''
+        + ", designation='" + designation + '\'' + ", salary=" + salary;
+  }
+}
+
+public class EmployeeMain {
+  public static void main(String[] args) {
+    Employee emp = new Employee("Steve Rogers", new Date(), "Computer Science", "Develop", 75000.00);
+
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data"))) {
+      out.writeObject(emp);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("data"))) {
+      Employee readEmp = (Employee) in.readObject();
+      System.out.println(readEmp);
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/IoStream
+$ javac EmployeeMain.java 
+User@bose /c/sayan/Wipro-TalentNext/IoStream
+$ java EmployeeMain
+Employee: name='Steve Rogers', dateOfBirth=Wed Jul 16 00:58:08 IST 2025, department='Computer Science', designation='Develop', salary=75000.0
+```
+
+# Collection
+
+## List
+
+### 1.
+
+Code
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Months {
+  public static void main(String[] args) {
+    ArrayList<String> months = new ArrayList<String>();
+    months.addAll(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
+    System.out.println(months);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac Months.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java Months
+[Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+```
+
+### 2.
+Code
+```java
+import java.util.ArrayList;
+
+class Employee {
+  int empId;
+  String empName;
+  String email;
+  String gender;
+  float salary;
+
+  Employee(int empId, String empName, String email, String gender, float salary) {
+    this.email = email;
+    this.empId = empId;
+    this.empName = empName;
+    this.gender = gender;
+    this.salary = salary;
+  }
+
+  void getEmployeeDetails() {
+    System.out.println(empId);
+    System.out.println(email);
+    System.out.println(gender);
+    System.out.println(salary);
+  }
+}
+
+class EmployeeDB {
+  ArrayList<Employee> list = new ArrayList<Employee>();
+
+  boolean addEmployee(Employee e) {
+    return list.add(e);
+  }
+
+  boolean deleteEmplotee(int empId) {
+    return list.removeIf(e -> e.empId == empId);
+  }
+
+  String showPaySlip(int empId) {
+    for (Employee e : list) {
+      if (e.empId == empId) {
+        return "Sal is: " + e.salary;
+      }
+    }
+    return "Emp not found";
+  }
+}
+
+public class EmployeeMain {
+  static void display(EmployeeDB edb) {
+    for (Employee e : edb.list) {
+      System.out.println(e.empId + " | " + e.empName + " | " + e.email + " | " + e.gender + " | Rs." + e.salary);
+    }
+
+  }
+
+  public static void main(String[] args) {
+    Employee e1 = new Employee(1, "Aman Gupta", "amangupta5651@gmail.com", "M", 18181.18f);
+    Employee e2 = new Employee(3, "Aisha Ghosh", "aishaghosh84448@gmail.com", "F", 15896.15f);
+
+    EmployeeDB edb = new EmployeeDB();
+
+    edb.addEmployee(e1);
+    edb.addEmployee(e2);
+
+    display(edb);
+
+    edb.deleteEmplotee(e1.empId);
+
+    display(edb);
+
+    edb.addEmployee(e1);
+
+    display(edb);
+
+    System.out.println(edb.showPaySlip(e1.empId));
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac EmployeeMain.java
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java EmployeeMain
+1 | Aman Gupta | amangupta5651@gmail.com | M | Rs.18181.18
+3 | Aisha Ghosh | aishaghosh84448@gmail.com | F | Rs.15896.15
+3 | Aisha Ghosh | aishaghosh84448@gmail.com | F | Rs.15896.15
+3 | Aisha Ghosh | aishaghosh84448@gmail.com | F | Rs.15896.15
+1 | Aman Gupta | amangupta5651@gmail.com | M | Rs.18181.18
+Sal is: 18181.18
+```
+
+### 3.
+Code
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class StringArrayList {
+  static ArrayList<String> stringArrayList = new ArrayList<String>();
+
+  static void printAll() {
+    Iterator<String> it = stringArrayList.iterator();
+
+    while (it.hasNext()) {
+      System.out.println(it.next());
+    }
+  }
+
+  public static void main(String[] args) {
+    stringArrayList.add("Tony Stark");
+    stringArrayList.add("Steve Rogers");
+    stringArrayList.add("Wanda Maximoff");
+    stringArrayList.add("Clint Barton");
+    stringArrayList.add("Bruce Banner");
+    stringArrayList.add("Natasha Romanoff");
+
+    printAll();
+  }
+}
+```
+
+Output
+```java
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac StringArrayList.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java StringArrayList
+Tony Stark
+Steve Rogers
+Wanda Maximoff
+Clint Barton
+Bruce Banner
+Natasha Romanoff
+```
+
+### 4.
+Code
+```java
+import java.util.ArrayList;
+
+public class NumbersArrayList {
+  public static void main(String[] args) {
+    ArrayList<Number> al = new ArrayList<>();
+    
+    al.add(488);
+    al.add(81.80f);
+    al.add(68.45);
+
+    System.out.println(al);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac NumbersArrayList.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java NumbersArrayList
+[488, 81.8, 68.45]
+```
+
+### 5.
+Code
+```java
+import java.util.Arrays;
+import java.util.LinkedList;
+
+public class MonthsLinkedList {
+  public static void main(String[] args) {
+    LinkedList<String> months = new LinkedList<String>();
+    months.addAll(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
+    System.out.println(months);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac MonthsLinkedList.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java MonthsLinkedList
+[Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+```
+
+### 6.
+Code
+```java
+import java.util.Arrays;
+import java.util.Vector;
+
+public class MonthsVector {
+  public static void main(String[] args) {
+    Vector<String> months = new Vector<String>();
+    months.addAll(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
+    System.out.println(months);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac MonthsVector.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java MonthsVector
+[Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+```
+
+### 7.
+Code
+```java
+import java.util.Arrays;
+import java.util.Vector;
+
+class Employee {
+  int id;
+  String name;
+  double salary;
+
+  Employee(int id, String name, double salary) {
+    this.id = id;
+    this.name = name;
+    this.salary = salary;
+  }
+}
+
+public class EmployeeVector {
+  public static void main(String[] args) {
+    Vector<Employee> employeeVector = new Vector<>();
+
+    Employee e1 = new Employee(1, "Tony Stark", 968445.05);
+    Employee e2 = new Employee(2, "Bruce Banner", 896335.62);
+    Employee e3 = new Employee(3, "Stephen Strange", 896336.96);
+
+    employeeVector.addAll(Arrays.asList(e1, e2, e3));
+
+    for (Employee e : employeeVector) {
+      System.out.println(e.id + " " + e.name + " " + e.salary);
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ javac EmployeeVector.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections
+$ java EmployeeVector
+1 Tony Stark 968445.05
+2 Bruce Banner 896335.62
+3 Stephen Strange 896336.96
+```
+
+## Set
+
+### 1.
+Code
+```java
+import java.util.HashSet;
+
+class CountrySet {
+  HashSet<String> h1  = new HashSet<>();
+ 
+  HashSet<String> saveCountryNames(String countryName) {
+    h1.add(countryName);
+    return h1;
+  }
+
+  boolean getCountry(String countryName) {
+    for (String country : h1) {
+      if (country == countryName) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+}
+
+public class CountryMain {
+  public static void main(String[] args) {
+    CountrySet cs = new CountrySet();
+
+    cs.saveCountryNames("India");
+    cs.saveCountryNames("America");
+    cs.saveCountryNames("Italy");
+    cs.saveCountryNames("Australia");
+    cs.saveCountryNames("Switzerland");
+
+    System.out.println(cs.getCountry("China") ? "Found" : "Not found");
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ javac CountryMain
+error: Class names, 'CountryMain', are only accepted if annotation processing is explicitly requested
+1 error
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ javac CountryMain.java
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ java CountryMain
+Not found
+```
+
+### 2.
+Code
+```java
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+
+public class EmployeeHashSet {
+  public static void main(String[] args) {
+    HashSet<String> employeeNames = new HashSet<>();
+
+    employeeNames.addAll(Arrays.asList("Tony Stark", "Bruce Banner", "Wanda Maximoff", "Clint Barton", "Agatha Harkess"));
+
+    Iterator<String> it = employeeNames.iterator();
+
+    while (it.hasNext()) {
+      System.out.println(it.next());
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ javac EmployeeHashSet.java 
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ java EmployeeHashSet
+Bruce Banner
+Tony Stark
+Agatha Harkess
+Clint Barton
+Wanda Maximoff
+```
+
+### 3.
+Code
+```java
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.TreeSet;
+
+public class StringTreeSet {
+  public static void main(String[] args) {
+    TreeSet<String> stringObj = new TreeSet<>();
+    
+    stringObj.add("India");
+    stringObj.add("America");
+    stringObj.add("Japan");
+
+    System.out.println("Reversed");
+    stringObj.reversed();
+    Iterator<String> it1 = stringObj.descendingIterator();
+    while (it1.hasNext()) {
+      System.out.println(it1.next());
+    }
+    
+    System.out.println();
+
+    System.out.println("All ele (Iterator): ");
+    Iterator<String> it2 = stringObj.iterator();
+    while (it2.hasNext()) {
+      System.out.println(it2.next());
+    }
+    
+    System.out.println();
+
+    System.out.println("Enter country to search: ");
+    Scanner sc = new Scanner(System.in);
+    String country = sc.next();
+    sc.close();
+    
+    for (String c : stringObj) {
+      if (c.equals(country)) {
+        System.out.println("Exists");
+        return;
+      }
+    }
+    System.out.println("Doesn't exist");
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ javac StringTreeSet.java 
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ java StringTreeSet
+Reversed
+Japan
+India
+America
+
+All ele (Iterator): 
+America
+India
+Japan
+
+Enter country to search:
+Japan
+Exists
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ java StringTreeSet
+Reversed
+Japan
+India
+America
+
+All ele (Iterator):
+America
+India
+Japan
+
+Enter country to search:
+UK
+Doesn't exist
+```
+
+### 4.
+Code
+```java
+import java.util.TreeSet;
+
+class CountryTree {
+  TreeSet<String> h1  = new TreeSet<>();
+ 
+  TreeSet<String> saveCountryNames(String countryName) {
+    h1.add(countryName);
+    return h1;
+  }
+
+  boolean getCountry(String countryName) {
+    for (String country : h1) {
+      if (country == countryName) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+}
+
+public class CountryTreeMain {
+  public static void main(String[] args) {
+    CountrySet cs = new CountrySet();
+
+    cs.saveCountryNames("India");
+    cs.saveCountryNames("America");
+    cs.saveCountryNames("Italy");
+    cs.saveCountryNames("Australia");
+    cs.saveCountryNames("Switzerland");
+
+    System.out.println(cs.getCountry("Switzerland") ? "Found" : "Not found");
+  }
+}
+
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ javac CountryTreeMain.java 
+User@bose /c/sayan/Wipro-TalentNext/Set
+$ java CountryTreeMain
+Found
+User@bose /c/sayan/Wipro-TalentNext/Set
+```
+
+## Map
+
+### 1.
+Code
+```java
+import java.util.ArrayList;
+import java.util.HashMap;
+
+class CountryHashMap {
+  HashMap<String, String> m1 = new HashMap<>();
+  HashMap<String, String> m2 = new HashMap<>();
+
+  HashMap<String, String> saveCountryCapital(String countryName, String capital) {
+    m1.put(countryName, capital);
+    return m1;
+  }
+
+  String getCapital(String countryName) {
+    return m1.get(countryName);
+  }
+
+  String getCountry(String capitalName) {
+    for (String country : m1.keySet()) {
+      if (m1.get(country).equals(capitalName)) {
+        return country;
+      }
+    }
+
+    return null;
+  }
+
+  void reverseMap() {
+    HashMap<String, String> m2 = new HashMap<>();
+    for (String country : m1.keySet()) {
+      m2.put(m1.get(country), country);
+    }
+
+    System.out.println(m2);
+  }
+
+  ArrayList<String> getAllCountries() {
+    ArrayList<String> coutries = new ArrayList<>();
+
+    for (String country : m1.keySet()) {
+      coutries.add(country);
+    }
+
+    return coutries;
+  }
+}
+
+public class CountryHashMapMain {
+  public static void main(String[] args) {
+    CountryHashMap ch = new CountryHashMap();
+
+    ch.saveCountryCapital("India", "Delhi");
+    ch.saveCountryCapital("US", "Washington DC");
+    ch.saveCountryCapital("UK", "London");
+    ch.saveCountryCapital("Bangladesh", "Dhaka");
+
+
+    System.out.println("All countries");
+    System.out.println(ch.getAllCountries());
+
+    System.out.println("Capital for US");
+    System.out.println(ch.getCapital("UK"));
+
+    System.out.println("Country whose capital is Delhi is");
+    System.err.println(ch.getCountry("Delhi"));
+
+    System.out.println("Reverse");
+    ch.reverseMap();
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java CountryHashMapMain
+All countries
+[Bangladesh, UK, US, India]
+Capital for US
+London
+Country whose capital is Delhi is
+India
+Reverse
+{Washington DC=US, Delhi=India, London=UK, Dhaka=Bangladesh}
+```
+
+### 2.
+Code
+```java
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class StringHAshMap {
+  static HashMap<String, String> hMap = new HashMap<>();
+
+  static boolean getKey(String name) {
+    for (String it : hMap.keySet()) {
+      if (it.equals(name))
+        return true;
+    }
+    return false;
+  }
+
+  static boolean getValue(String name) {
+    for (String it : hMap.values()) {
+      if (it.equals(name))
+        return true;
+    }
+    return false;
+  }
+
+  public static void main(String[] args) {
+    hMap.put("Harry Potter", "JK Rowling");
+    hMap.put("Nightingale", "Kristin Hannah");
+    hMap.put("The White Tiger", "Aravind Adiga");
+    hMap.put("Feluda", "Satyajit Ray");
+
+    System.out.println("Check if key exists: Harry Potter");
+    System.out.println(hMap.containsKey("Harry Potter")? "Found" : "Not Found");
+
+    System.out.println("Check if value exists: Kristin Hannah");
+    System.out.println(hMap.containsValue("Kristin Hannah") ? "Found" : "Not Found");
+
+    System.out.println("All values");
+    Iterator<String> it = hMap.keySet().iterator();
+
+    while (it.hasNext()) {
+      String key = it.next();
+      System.out.println(key + " -> " + hMap.get(key));
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ javac StringHAshMap.java 
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java StringHAshMap
+Check if key exists: Harry Potter
+Found
+Check if value exists: Kristin Hannah
+Found
+All values
+The White Tiger -> Aravind Adiga
+Feluda -> Satyajit Ray
+Harry Potter -> JK Rowling
+Nightingale -> Kristin Hannah
+```
+
+### 3.
+Code
+```java
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+
+public class PropertiesCapital {
+  public static void main(String[] args) {
+    Properties states = new Properties();
+
+    states.put("West Bengal", "Kolkata");
+    states.put("Rajasthan", "Jaipur");
+    states.put("Maharashtra", "Mumbai");
+    states.put("Karnataka", "Bangalore");
+
+    Set<Object> statesNames = states.keySet();
+    Iterator<Object> it = statesNames.iterator();
+
+    while (it.hasNext()) {
+      String state = (String) it.next();
+      String capital = states.getProperty(state);
+
+      System.out.println(state + " | " + capital);
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ javac PropertiesCapital.java 
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java PropertiesCapital
+Karnataka | Bangalore
+West Bengal | Kolkata
+Maharashtra | Mumbai
+Rajasthan | Jaipur
+```
+
+### 4.
+Code
+```java
+import java.util.HashMap;
+
+public class PhoneNo {
+  public static void main(String[] args) {
+    HashMap<String, Integer> contactList = new HashMap<>();
+
+    contactList.put("Aman Ghosh", 96315);
+    contactList.put("Ankit Bose", 96788);
+    contactList.put("Amrita Sen", 97236);
+    contactList.put("Susmita Ray", 91055);
+
+    System.out.println("Key exists?: Amrita Sen");
+    System.out.println(contactList.containsKey("Amrita Sen") ? "Exists" : "Doesn't exist");
+
+    System.out.println("Val exists?: 977855");
+    System.out.println(contactList.containsValue(977855) ? "Exists" : "Doesn't exist");
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ javac PhoneNo.java
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java PhoneNo
+Key exists?: Amrita Sen
+Exists
+Val exists?: 977855
+Doesn't exist
+```
+
+### 5.
+Code
+```java
+import java.util.ArrayList;
+import java.util.TreeMap;
+
+class CountryTreeMap {
+  TreeMap<String, String> m1 = new TreeMap<>();
+  TreeMap<String, String> m2 = new TreeMap<>();
+
+  TreeMap<String, String> saveCountryCapital(String countryName, String capital) {
+    m1.put(countryName, capital);
+    return m1;
+  }
+
+  String getCapital(String countryName) {
+    return m1.get(countryName);
+  }
+
+  String getCountry(String capitalName) {
+    for (String country : m1.keySet()) {
+      if (m1.get(country).equals(capitalName)) {
+        return country;
+      }
+    }
+    return null;
+  }
+
+  void reverseMap() {
+    m2.clear(); // optional: clear previous contents
+    for (String country : m1.keySet()) {
+      m2.put(m1.get(country), country);
+    }
+    System.out.println(m2);
+  }
+
+  ArrayList<String> getAllCountries() {
+    ArrayList<String> countries = new ArrayList<>();
+    for (String country : m1.keySet()) {
+      countries.add(country);
+    }
+    return countries;
+  }
+}
+
+public class CountryTreeMapMain {
+  public static void main(String[] args) {
+    CountryTreeMap ch = new CountryTreeMap();
+
+    ch.saveCountryCapital("India", "Delhi");
+    ch.saveCountryCapital("US", "Washington DC");
+    ch.saveCountryCapital("UK", "London");
+    ch.saveCountryCapital("Bangladesh", "Dhaka");
+
+    System.out.println("All countries");
+    System.out.println(ch.getAllCountries());
+
+    System.out.println("Capital for UK");
+    System.out.println(ch.getCapital("UK"));
+
+    System.out.println("Country whose capital is Delhi is");
+    System.out.println(ch.getCountry("Delhi"));
+
+    System.out.println("Reverse");
+    ch.reverseMap();
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ javac CountryTreeMapMain.java
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java CountryTreeMapMain
+All countries
+[Bangladesh, India, UK, US]
+Capital for UK
+London
+Country whose capital is Delhi is
+India
+Reverse
+{Delhi=India, Dhaka=Bangladesh, London=UK, Washington DC=US}
+```
+
+### 6.
+Code
+```java
+import java.util.ArrayList;
+import java.util.Hashtable;
+
+class CountryHashTable {
+  Hashtable<String, String> m1 = new Hashtable<>();
+  Hashtable<String, String> m2 = new Hashtable<>();
+
+  Hashtable<String, String> saveCountryCapital(String countryName, String capital) {
+    m1.put(countryName, capital);
+    return m1;
+  }
+
+  String getCapital(String countryName) {
+    return m1.get(countryName);
+  }
+
+  String getCountry(String capitalName) {
+    for (String country : m1.keySet()) {
+      if (m1.get(country).equals(capitalName)) {
+        return country;
+      }
+    }
+    return null;
+  }
+
+  void reverseMap() {
+    m2.clear();
+    for (String country : m1.keySet()) {
+      m2.put(m1.get(country), country);
+    }
+    System.out.println(m2);
+  }
+
+  ArrayList<String> getAllCountries() {
+    ArrayList<String> countries = new ArrayList<>();
+    for (String country : m1.keySet()) {
+      countries.add(country);
+    }
+    return countries;
+  }
+}
+
+public class CountryHashTableMain {
+  public static void main(String[] args) {
+    CountryHashTable ch = new CountryHashTable();
+
+    ch.saveCountryCapital("India", "Delhi");
+    ch.saveCountryCapital("US", "Washington DC");
+    ch.saveCountryCapital("UK", "London");
+    ch.saveCountryCapital("Bangladesh", "Dhaka");
+
+    System.out.println("All countries");
+    System.out.println(ch.getAllCountries());
+
+    System.out.println("Capital for UK");
+    System.out.println(ch.getCapital("UK"));
+
+    System.out.println("Country whose capital is Delhi is");
+    System.out.println(ch.getCountry("Delhi"));
+
+    System.out.println("Reverse");
+    ch.reverseMap();
+  }
+}
+```
+
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ javac CountryHashTableMain.java
+User@bose /c/sayan/Wipro-TalentNext/Map
+$ java CountryHashTableMain
+All countries
+[Bangladesh, UK, India, US]
+Capital for UK
+London
+Country whose capital is Delhi is
+India
+Reverse
+{Washington DC=US, Dhaka=Bangladesh, Delhi=India, London=UK}
+```
+
+## Lambda Expressions
+
+### 2.
+
+Code
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class WordList {
+  public static void main(String[] args) {
+    ArrayList<String> al = new ArrayList<>();
+    al.addAll(Arrays.asList("Tony Stark", "Steve Rogers", "Thor Odinson", "Steven Strange", "Wanda Maximoff",
+        "Agatha Harkess", "Peter Parker", "Norman Osborne", "Harry Osborne", "May Parker"));
+
+    al.forEach(a -> System.out.println(a));
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/LambdaExpr
+$ javac WordList.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/LambdaExpr
+$ java WordList
+Tony Stark
+Steve Rogers
+Thor Odinson
+Steven Strange
+Wanda Maximoff
+Agatha Harkess
+Peter Parker
+Norman Osborne
+Harry Osborne
+May Parker
+```
+
+### 4.
+Code
+```java
+import java.util.Scanner;
+
+interface WordCount {
+  int count(String str);
+}
+
+public class MyClassWithLambda {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Enter string");
+    String s = sc.nextLine();
+    sc.close();
+
+    WordCount wc = (str -> str.split(" ").length);
+    System.out.println("No of words in string " + wc.count(s));
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/LambdaExpr
+$ javac MyClassWithLambda.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/LambdaExpr
+$ java MyClassWithLambda
+Enter string
+Balanced as everything should be
+No of words in string 5
+```
+
+## Method Reference
+
+### 3.
+Code
+```java
+interface PrimeChecker {
+  MyPrime check(int n);
+}
+
+class MyPrime {
+  MyPrime(int n) {
+    if (isPrime(n)) {
+      System.out.println("Prime");
+    } else {
+      System.out.println("Not Prime");
+    }
+  }
+
+  private boolean isPrime(int num) {
+    if (num <= 1)
+      return false;
+    if (num == 2)
+      return true;
+    if (num % 2 == 0)
+      return false;
+    for (int i = 3; i <= Math.sqrt(num); i += 2)
+      if (num % i == 0)
+        return false;
+    return true;
+  }
+}
+
+public class PrimeMain {
+  public static void main(String[] args) {
+    PrimeChecker pc = MyPrime::new;
+    pc.check(17); 
+    pc.check(18);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/MethodReference
+$ javac PrimeMain.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/MethodReference
+$ java PrimeMain
+Prime
+Not Prime
+```
+
+## Stream API
+
+### 3
+Code
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+
+class Student {
+  int rollNo;
+  String name;
+  double marks;
+
+  Student(int rollNo, String name, double marks) {
+    this.rollNo = rollNo;
+    this.name = name;
+    this.marks = marks;
+  }
+}
+
+public class StudentMain {
+  public static void main(String[] args) {
+    ArrayList<Student> studentsAL = new ArrayList<>();
+
+    Student s1 = new Student(1, "Tony Stark", 99.68);
+    Student s3 = new Student(3, "Wanda Maximoff", 42.05);
+    Student s2 = new Student(2, "Bruce Banner", 99.66);
+    Student s4 = new Student(4, "Steve Rogers", 49.06);
+    Student s5 = new Student(5, "Reed Richards", 100.00);
+
+    studentsAL.addAll(Arrays.asList(s1, s2, s3, s4, s5));
+
+    studentsAL.forEach(s -> System.out.println(s.rollNo + " " + s.name + " " + s.marks));
+
+    long count = studentsAL.stream()
+        .filter(s -> s.marks >= 50)
+        .count();
+
+    System.out.println("No passed: ");
+    System.out.println(count);
+  }
+}
+```
+
+Output
+```sh
+$ javac StudentMain.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ java StudentMain
+1 Tony Stark 99.68
+2 Bruce Banner 99.66
+3 Wanda Maximoff 42.05
+4 Steve Rogers 49.06
+5 Reed Richards 100.0
+No passed: 
+3
+```
+
+## Functional Interface
+
+### 3.
+Code
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Predicate;
+
+public class Pallindrome {
+  public static void main(String[] args) {
+    ArrayList<String> words = new ArrayList<>(
+        Arrays.asList("madam", "hello", "racecar", "apple", "level", "world", "noon", "java", "civic", "kayak"));
+
+    Predicate<String> isPalindrome = w -> w.equalsIgnoreCase(new StringBuilder(w).reverse().toString());
+
+    words.stream()
+        .filter(isPalindrome)
+        .forEach(w -> System.out.println(w));
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ javac Pallindrome.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ java Pallindrome
+madam
+racecar
+level
+noon
+civic
+kayak
+```
+
+### 7.
+Code
+```java
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
+public class OddEvenCheck {
+  public static void main(String[] args) {
+    ArrayList<Integer> al = new ArrayList<>();
+
+    for (int i = 1; i <= 10; i++) {
+      al.add(i);
+    }
+
+    Consumer<Integer> printOdd = n -> {
+      System.out.println(n + " is " + (n % 2 == 0 ? "Even" : "Odd"));
+    };
+
+    al.forEach(printOdd);
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ javac OddEvenCheck.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ java OddEvenCheck
+1 is Odd
+2 is Even
+3 is Odd
+4 is Even
+5 is Odd
+6 is Even
+7 is Odd
+8 is Even
+9 is Odd
+10 is Even
+```
+
+### 8.
+Code
+```java
+import java.util.ArrayList;
+import java.util.function.Supplier;
+
+public class PrimeSupplier {
+  public static void main(String[] args) {
+    Supplier<ArrayList<Integer>> primeSupplier = () -> {
+      ArrayList<Integer> primes = new ArrayList<>();
+      int num = 2;
+      while (primes.size() < 10) {
+        if (isPrime(num))
+          primes.add(num);
+        num++;
+      }
+      return primes;
+    };
+    System.out.println(primeSupplier.get());
+  }
+
+  private static boolean isPrime(int number) {
+    if (number <= 1)
+      return false;
+    for (int i = 2; i * i <= number; i++) {
+      if (number % i == 0)
+        return false;
+    }
+    return true;
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ javac PrimeSupplier.java 
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ java PrimeSupplier
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+```
+
+## Date Time API
+
+### 4.
+
+Code
+```java
+import java.time.LocalDate;
+import java.time.Year;
+
+public class LeapYear {
+  public static void main(String[] args) {
+    int year = LocalDate.now().getYear();
+
+    if (Year.isLeap(year)) {
+      System.out.println(year + " is Leap Year");
+    } else {
+      System.out.println(year + " is Not Leap Year");
+    }
+  }
+}
+```
+
+Output
+```sh
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ javac LeapYear.java
+User@bose /c/sayan/Wipro-TalentNext/Collections/Normal
+$ java LeapYear
+2025 is Not Leap Year
+```
