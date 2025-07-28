@@ -1,10 +1,26 @@
-import java.util.Optional;
-import java.util.StringJoiner;
+interface Book {
+  void printBook(String bookName);
+}
 
 public class Main {
-  public static void main(String[] args) {
-    Optional<String> name = Optional.of(null);
+  static void dance(String b) {
+    System.out.println("Hi " + b);
+  }
 
-    System.out.println(name.get());
+  public static void main(String[] args) {
+    // Lambda Expr
+    Book b1 = (bn) -> System.out.println(bn);
+    b1.printBook("Nightingale");
+
+    // Lambda Expr
+    Book b2 = (bn) -> {
+      bn += " (Copyright)";
+      System.out.println(bn);
+    };
+    b2.printBook("Tom Sawyer");
+
+    // Method Reference
+    Book b3 = Main::dance;
+    b3.printBook("Huckelburry Finn");
   }
 }
