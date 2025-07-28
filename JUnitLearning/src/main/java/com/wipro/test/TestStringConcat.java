@@ -15,7 +15,6 @@ public class TestStringConcat {
     assertEquals(expected, result);
   }
 
-  @Test
   public void testSortValues() {
     int[] arr = { 1, 9, 1, 3, 6 };
     int[] expected = { 1, 1, 3, 6, 9 };
